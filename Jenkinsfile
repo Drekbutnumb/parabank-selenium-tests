@@ -8,52 +8,25 @@ pipeline {
             }
         }
 
-        stage('Run Registration Tests') {
+        stage('Run All Tests & Generate Report') {
             steps {
-                bat 'python test_selenium1.py'
-            }
-        }
-
-        stage('Run Login Tests') {
-            steps {
-                bat 'python test_selenium2.py'
-            }
-        }
-
-        stage('Run Open Account Tests') {
-            steps {
-                bat 'python test_selenium3.py'
-            }
-        }
-
-        stage('Run Transfer Tests') {
-            steps {
-                bat 'python test_selenium4.py'
-            }
-        }
-
-        stage('Run Accounts Overview Tests') {
-            steps {
-                bat 'python test_selenium5.py'
-            }
-        }
-
-        stage('Run Admin Page Tests') {
-            steps {
-                bat 'python test_selenium6.py'
-            }
-        }
-
-        stage('Run Customer Care Tests') {
-            steps {
-                bat 'python test_selenium7.py'
+                bat 'python generate_report.py'
             }
         }
     }
 
     post {
         always {
+            archiveArtifacts artifacts: 'test_report.html', allowEmptyArchive: true
             archiveArtifacts artifacts: 'screenshots/**/*.png', allowEmptyArchive: true
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: '.',
+                reportFiles: 'test_report.html',
+                reportName: 'Selenium Test Report'
+            ])
         }
     }
 }
