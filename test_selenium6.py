@@ -33,7 +33,7 @@ class TestAdminPage:
         """Capture screenshot at critical test moments"""
         filepath = f"{self.screenshot_dir}/{name}.png"
         driver.save_screenshot(filepath)
-        print(f"    📸 Screenshot saved: {filepath}")
+        print(f"    [Screenshot] Screenshot saved: {filepath}")
         return filepath
 
     def setup(self, driver):
@@ -63,13 +63,13 @@ class TestAdminPage:
 
             self.take_screenshot(driver, "TC_ADMIN_01_02_admin_page")
 
-            print("✓ PASS: Admin Page accessed successfully")
+            print("[PASS] PASS: Admin Page accessed successfully")
             self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ADMIN_01_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -101,16 +101,16 @@ class TestAdminPage:
             self.take_screenshot(driver, "TC_ADMIN_02_02_database_section")
 
             if len(buttons) > 0:
-                print(f"✓ PASS: Database section displayed with {len(buttons)} action buttons")
+                print(f"[PASS] PASS: Database section displayed with {len(buttons)} action buttons")
                 self.passed += 1
             else:
-                print("✓ PASS: Database section displayed")
+                print("[PASS] PASS: Database section displayed")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ADMIN_02_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -145,13 +145,13 @@ class TestAdminPage:
 
             self.take_screenshot(driver, "TC_ADMIN_03_02_after_init")
 
-            print("✓ PASS: Database initialized successfully")
+            print("[PASS] PASS: Database initialized successfully")
             self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ADMIN_03_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -186,13 +186,13 @@ class TestAdminPage:
 
             self.take_screenshot(driver, "TC_ADMIN_04_02_after_clean")
 
-            print("✓ PASS: Database cleaned successfully")
+            print("[PASS] PASS: Database cleaned successfully")
             self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ADMIN_04_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -224,16 +224,16 @@ class TestAdminPage:
             self.take_screenshot(driver, "TC_ADMIN_05_02_data_access")
 
             if len(radio_buttons) > 0:
-                print(f"✓ PASS: Data Access Mode section with {len(radio_buttons)} options")
+                print(f"[PASS] PASS: Data Access Mode section with {len(radio_buttons)} options")
                 self.passed += 1
             else:
-                print("✓ PASS: Data Access Mode section displayed")
+                print("[PASS] PASS: Data Access Mode section displayed")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ADMIN_05_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -256,17 +256,17 @@ class TestAdminPage:
 
             if "administration" in page_source or "database" in page_source:
                 self.take_screenshot(driver, "TC_ADMIN_06_02_accessible")
-                print("⚠ PASS (Security Note): Admin page accessible without login - potential security concern")
+                print("[WARNING] PASS (Security Note): Admin page accessible without login - potential security concern")
                 self.passed += 1
             else:
                 self.take_screenshot(driver, "TC_ADMIN_06_02_blocked")
-                print("✓ PASS: Admin page requires authentication")
+                print("[PASS] PASS: Admin page requires authentication")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ADMIN_06_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -311,16 +311,16 @@ class TestAdminPage:
             page_source = driver.page_source.lower()
 
             if "sql" not in page_source and "error" not in page_source:
-                print("✓ PASS: SQL injection attempt handled safely")
+                print("[PASS] PASS: SQL injection attempt handled safely")
                 self.passed += 1
             else:
-                print("✓ PASS: Admin page responded to input test")
+                print("[PASS] PASS: Admin page responded to input test")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ADMIN_07_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:

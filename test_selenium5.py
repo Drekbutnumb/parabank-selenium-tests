@@ -33,7 +33,7 @@ class TestAccountsOverview:
         """Capture screenshot at critical test moments"""
         filepath = f"{self.screenshot_dir}/{name}.png"
         driver.save_screenshot(filepath)
-        print(f"    📸 Screenshot saved: {filepath}")
+        print(f"    [Screenshot] Screenshot saved: {filepath}")
         return filepath
 
     def login(self, driver, wait):
@@ -73,16 +73,16 @@ class TestAccountsOverview:
             self.take_screenshot(driver, "TC_ACCOUNTS_01_02_accounts_table")
 
             if account_count > 0:
-                print(f"✓ PASS: Accounts Overview displayed with {account_count} accounts")
+                print(f"[PASS] PASS: Accounts Overview displayed with {account_count} accounts")
                 self.passed += 1
             else:
-                print("✗ FAIL: No accounts found")
+                print("[FAIL] FAIL: No accounts found")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACCOUNTS_01_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -118,13 +118,13 @@ class TestAccountsOverview:
 
             self.take_screenshot(driver, "TC_ACCOUNTS_02_02_account_details")
 
-            print(f"✓ PASS: Account Details displayed - ID: {account_id}, Type: {account_type}, Balance: {balance}")
+            print(f"[PASS] PASS: Account Details displayed - ID: {account_id}, Type: {account_type}, Balance: {balance}")
             self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACCOUNTS_02_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -155,17 +155,17 @@ class TestAccountsOverview:
 
                 self.take_screenshot(driver, "TC_ACCOUNTS_03_02_transactions")
 
-                print(f"✓ PASS: Transaction history displayed with {transaction_count} transactions")
+                print(f"[PASS] PASS: Transaction history displayed with {transaction_count} transactions")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_ACCOUNTS_03_02_no_transactions")
-                print("✓ PASS: Account page loaded (no transactions yet)")
+                print("[PASS] PASS: Account page loaded (no transactions yet)")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACCOUNTS_03_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -189,16 +189,16 @@ class TestAccountsOverview:
 
             # Check if balance has $ sign and proper format
             if "$" in balance_text:
-                print(f"✓ PASS: Balance displayed with correct currency format: {balance_text}")
+                print(f"[PASS] PASS: Balance displayed with correct currency format: {balance_text}")
                 self.passed += 1
             else:
-                print(f"✗ FAIL: Balance missing currency symbol: {balance_text}")
+                print(f"[FAIL] FAIL: Balance missing currency symbol: {balance_text}")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACCOUNTS_04_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -228,16 +228,16 @@ class TestAccountsOverview:
             self.take_screenshot(driver, "TC_ACCOUNTS_05_02_verification")
 
             if all_clickable and link_count > 0:
-                print(f"✓ PASS: All {link_count} account links are clickable")
+                print(f"[PASS] PASS: All {link_count} account links are clickable")
                 self.passed += 1
             else:
-                print("✗ FAIL: Some account links are not clickable")
+                print("[FAIL] FAIL: Some account links are not clickable")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACCOUNTS_05_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -273,20 +273,20 @@ class TestAccountsOverview:
                 self.take_screenshot(driver, "TC_ACCOUNTS_06_02_total_verified")
 
                 if abs(calculated_total - displayed_total) < 0.01:
-                    print(f"✓ PASS: Total balance correct - Displayed: ${displayed_total:.2f}, Calculated: ${calculated_total:.2f}")
+                    print(f"[PASS] PASS: Total balance correct - Displayed: ${displayed_total:.2f}, Calculated: ${calculated_total:.2f}")
                     self.passed += 1
                 else:
-                    print(f"✗ FAIL: Total mismatch - Displayed: ${displayed_total:.2f}, Calculated: ${calculated_total:.2f}")
+                    print(f"[FAIL] FAIL: Total mismatch - Displayed: ${displayed_total:.2f}, Calculated: ${calculated_total:.2f}")
                     self.failed += 1
             except:
                 self.take_screenshot(driver, "TC_ACCOUNTS_06_02_calculated")
-                print(f"✓ PASS: Individual balances verified, calculated total: ${calculated_total:.2f}")
+                print(f"[PASS] PASS: Individual balances verified, calculated total: ${calculated_total:.2f}")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACCOUNTS_06_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -310,21 +310,21 @@ class TestAccountsOverview:
             # Check if redirected to login or blocked
             if "login" in page_source or "username" in page_source:
                 self.take_screenshot(driver, "TC_ACCOUNTS_07_02_blocked")
-                print("✓ PASS: Direct account access blocked - redirected to login")
+                print("[PASS] PASS: Direct account access blocked - redirected to login")
                 self.passed += 1
             elif "error" in page_source:
                 self.take_screenshot(driver, "TC_ACCOUNTS_07_02_error_shown")
-                print("✓ PASS: Direct account access blocked - error displayed")
+                print("[PASS] PASS: Direct account access blocked - error displayed")
                 self.passed += 1
             else:
                 self.take_screenshot(driver, "TC_ACCOUNTS_07_02_security_issue")
-                print("⚠ PASS (Security Note): Page accessible without login - potential security concern")
+                print("[WARNING] PASS (Security Note): Page accessible without login - potential security concern")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACCOUNTS_07_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:

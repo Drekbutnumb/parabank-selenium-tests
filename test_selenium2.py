@@ -33,7 +33,7 @@ class TestLogin:
         """Capture screenshot at critical test moments"""
         filepath = f"{self.screenshot_dir}/{name}.png"
         driver.save_screenshot(filepath)
-        print(f"    📸 Screenshot saved: {filepath}")
+        print(f"    [Screenshot] Screenshot saved: {filepath}")
         return filepath
 
     def setup(self, driver):
@@ -70,17 +70,17 @@ class TestLogin:
                     EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Accounts Overview')]"))
                 )
                 self.take_screenshot(driver, "TC_LOGIN_01_03_login_success")
-                print("✓ PASS: User logged in successfully, Accounts Overview page displayed")
+                print("[PASS] PASS: User logged in successfully, Accounts Overview page displayed")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_LOGIN_01_03_login_failed")
-                print("✗ FAIL: Login failed or Accounts Overview page not displayed")
+                print("[FAIL] FAIL: Login failed or Accounts Overview page not displayed")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGIN_01_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -113,17 +113,17 @@ class TestLogin:
                     EC.presence_of_element_located((By.CLASS_NAME, "error"))
                 )
                 self.take_screenshot(driver, "TC_LOGIN_02_02_error_displayed")
-                print("✓ PASS: Error message displayed for invalid username")
+                print("[PASS] PASS: Error message displayed for invalid username")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_LOGIN_02_02_result")
-                print("✗ FAIL: No error message displayed for invalid username")
+                print("[FAIL] FAIL: No error message displayed for invalid username")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGIN_02_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -156,17 +156,17 @@ class TestLogin:
                     EC.presence_of_element_located((By.CLASS_NAME, "error"))
                 )
                 self.take_screenshot(driver, "TC_LOGIN_03_02_error_displayed")
-                print("✓ PASS: Error message displayed for invalid password")
+                print("[PASS] PASS: Error message displayed for invalid password")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_LOGIN_03_02_result")
-                print("✗ FAIL: No error message displayed for invalid password")
+                print("[FAIL] FAIL: No error message displayed for invalid password")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGIN_03_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -193,17 +193,17 @@ class TestLogin:
                     EC.presence_of_element_located((By.CLASS_NAME, "error"))
                 )
                 self.take_screenshot(driver, "TC_LOGIN_04_02_error_displayed")
-                print("✓ PASS: Error message displayed for empty credentials")
+                print("[PASS] PASS: Error message displayed for empty credentials")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_LOGIN_04_02_result")
-                print("✗ FAIL: No error message displayed for empty credentials")
+                print("[FAIL] FAIL: No error message displayed for empty credentials")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGIN_04_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -233,17 +233,17 @@ class TestLogin:
                     EC.presence_of_element_located((By.CLASS_NAME, "error"))
                 )
                 self.take_screenshot(driver, "TC_LOGIN_05_02_error_displayed")
-                print("✓ PASS: Error message displayed for empty password")
+                print("[PASS] PASS: Error message displayed for empty password")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_LOGIN_05_02_result")
-                print("✗ FAIL: No error message displayed for empty password")
+                print("[FAIL] FAIL: No error message displayed for empty password")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGIN_05_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -280,19 +280,19 @@ class TestLogin:
             # Check if login was blocked (no unauthorized access)
             page_source_lower = driver.page_source.lower()
             if "accounts overview" not in page_source_lower and "sql" not in page_source_lower:
-                print("✓ PASS: SQL injection attempt blocked - no unauthorized access")
+                print("[PASS] PASS: SQL injection attempt blocked - no unauthorized access")
                 self.passed += 1
             elif "error" in page_source_lower:
-                print("✓ PASS: SQL injection attempt handled safely with error message")
+                print("[PASS] PASS: SQL injection attempt handled safely with error message")
                 self.passed += 1
             else:
-                print("✗ FAIL: Potential SQL injection vulnerability")
+                print("[FAIL] FAIL: Potential SQL injection vulnerability")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGIN_06_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -358,16 +358,16 @@ class TestLogin:
             error_present = "error" in page_source or "please login" in page_source or "log in" in page_source
 
             if login_form_present or error_present:
-                print("✓ PASS: Session properly invalidated after logout - access denied")
+                print("[PASS] PASS: Session properly invalidated after logout - access denied")
                 self.passed += 1
             else:
-                print("✗ FAIL: Session not properly invalidated - protected data still accessible")
+                print("[FAIL] FAIL: Session not properly invalidated - protected data still accessible")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGIN_07_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:

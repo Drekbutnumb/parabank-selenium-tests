@@ -34,7 +34,7 @@ class TestOpenAccount:
         """Capture screenshot at critical test moments"""
         filepath = f"{self.screenshot_dir}/{name}.png"
         driver.save_screenshot(filepath)
-        print(f"    📸 Screenshot saved: {filepath}")
+        print(f"    [Screenshot] Screenshot saved: {filepath}")
         return filepath
 
     def setup(self, driver):
@@ -89,17 +89,17 @@ class TestOpenAccount:
                 )
                 new_account_id = driver.find_element(By.ID, "newAccountId").text
                 self.take_screenshot(driver, "TC_OPEN_01_03_account_created")
-                print(f"✓ PASS: New CHECKING account created successfully with ID: {new_account_id}")
+                print(f"[PASS] PASS: New CHECKING account created successfully with ID: {new_account_id}")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_OPEN_01_03_failed")
-                print("✗ FAIL: Account creation success message not found")
+                print("[FAIL] FAIL: Account creation success message not found")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_OPEN_01_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -136,17 +136,17 @@ class TestOpenAccount:
                 )
                 new_account_id = driver.find_element(By.ID, "newAccountId").text
                 self.take_screenshot(driver, "TC_OPEN_02_02_savings_created")
-                print(f"✓ PASS: New SAVINGS account created successfully with ID: {new_account_id}")
+                print(f"[PASS] PASS: New SAVINGS account created successfully with ID: {new_account_id}")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_OPEN_02_02_failed")
-                print("✗ FAIL: Account creation success message not found")
+                print("[FAIL] FAIL: Account creation success message not found")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_OPEN_02_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -180,17 +180,17 @@ class TestOpenAccount:
                 )
                 new_account_id = driver.find_element(By.ID, "newAccountId").text
                 self.take_screenshot(driver, "TC_OPEN_03_02_default_created")
-                print(f"✓ PASS: Account created with default type, ID: {new_account_id}")
+                print(f"[PASS] PASS: Account created with default type, ID: {new_account_id}")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_OPEN_03_02_failed")
-                print("✗ FAIL: Account creation with default type failed")
+                print("[FAIL] FAIL: Account creation with default type failed")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_OPEN_03_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -245,17 +245,17 @@ class TestOpenAccount:
                 )
                 new_balance = balance_element.text
                 self.take_screenshot(driver, "TC_OPEN_04_03_new_account_balance")
-                print(f"✓ PASS: Minimum deposit transferred, new account balance: {new_balance}")
+                print(f"[PASS] PASS: Minimum deposit transferred, new account balance: {new_balance}")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_OPEN_04_failed")
-                print("✗ FAIL: Unable to verify minimum deposit transfer")
+                print("[FAIL] FAIL: Unable to verify minimum deposit transfer")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_OPEN_04_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -320,19 +320,19 @@ class TestOpenAccount:
                     pass  # Skip rows without account links (e.g., totals row)
 
             if new_account_id in account_ids and updated_count == initial_count + 1:
-                print(f"✓ PASS: New account {new_account_id} appears in accounts list (Count: {initial_count} → {updated_count})")
+                print(f"[PASS] PASS: New account {new_account_id} appears in accounts list (Count: {initial_count} → {updated_count})")
                 self.passed += 1
             elif new_account_id in account_ids:
-                print(f"✓ PASS: New account {new_account_id} found in accounts list")
+                print(f"[PASS] PASS: New account {new_account_id} found in accounts list")
                 self.passed += 1
             else:
-                print(f"✗ FAIL: New account {new_account_id} not found in accounts list")
+                print(f"[FAIL] FAIL: New account {new_account_id} not found in accounts list")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_OPEN_05_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -375,19 +375,19 @@ class TestOpenAccount:
             self.take_screenshot(driver, "TC_OPEN_06_01_multiple_accounts")
 
             if len(created_accounts) == 3:
-                print(f"✓ PASS: Successfully created 3 accounts rapidly: {', '.join(created_accounts)}")
+                print(f"[PASS] PASS: Successfully created 3 accounts rapidly: {', '.join(created_accounts)}")
                 self.passed += 1
             elif len(created_accounts) > 0:
-                print(f"✓ PASS: Created {len(created_accounts)} accounts: {', '.join(created_accounts)}")
+                print(f"[PASS] PASS: Created {len(created_accounts)} accounts: {', '.join(created_accounts)}")
                 self.passed += 1
             else:
-                print("✗ FAIL: Failed to create multiple accounts")
+                print("[FAIL] FAIL: Failed to create multiple accounts")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_OPEN_06_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:

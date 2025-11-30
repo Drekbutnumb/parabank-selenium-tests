@@ -33,7 +33,7 @@ class TestCustomerCare:
         """Capture screenshot at critical test moments"""
         filepath = f"{self.screenshot_dir}/{name}.png"
         driver.save_screenshot(filepath)
-        print(f"    📸 Screenshot saved: {filepath}")
+        print(f"    [Screenshot] Screenshot saved: {filepath}")
         return filepath
 
     def setup(self, driver):
@@ -69,13 +69,13 @@ class TestCustomerCare:
 
             self.take_screenshot(driver, "TC_CARE_01_02_contact_page")
 
-            print("✓ PASS: Customer Care page accessed with all form fields visible")
+            print("[PASS] PASS: Customer Care page accessed with all form fields visible")
             self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_CARE_01_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -122,16 +122,16 @@ class TestCustomerCare:
                 success_message = wait.until(
                     EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Thank you')]"))
                 )
-                print("✓ PASS: Form submitted successfully with confirmation message")
+                print("[PASS] PASS: Form submitted successfully with confirmation message")
                 self.passed += 1
             except:
-                print("✓ PASS: Form submitted successfully")
+                print("[PASS] PASS: Form submitted successfully")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_CARE_02_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -165,16 +165,16 @@ class TestCustomerCare:
             errors = driver.find_elements(By.CLASS_NAME, "error")
 
             if len(errors) > 0:
-                print(f"✓ PASS: Validation errors displayed ({len(errors)} errors)")
+                print(f"[PASS] PASS: Validation errors displayed ({len(errors)} errors)")
                 self.passed += 1
             else:
-                print("✗ FAIL: No validation errors for empty form")
+                print("[FAIL] FAIL: No validation errors for empty form")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_CARE_03_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -221,16 +221,16 @@ class TestCustomerCare:
             page_source = driver.page_source.lower()
 
             if "thank you" in page_source:
-                print("⚠ PASS: Form accepted invalid email (no email validation)")
+                print("[WARNING] PASS: Form accepted invalid email (no email validation)")
                 self.passed += 1
             else:
-                print("✓ PASS: Form handled invalid email input")
+                print("[PASS] PASS: Form handled invalid email input")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_CARE_04_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -275,16 +275,16 @@ class TestCustomerCare:
             page_source = driver.page_source.lower()
 
             if "thank you" in page_source:
-                print("✓ PASS: Form submitted without phone (optional field)")
+                print("[PASS] PASS: Form submitted without phone (optional field)")
                 self.passed += 1
             else:
-                print("✓ PASS: Form processed without phone number")
+                print("[PASS] PASS: Form processed without phone number")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_CARE_05_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -333,17 +333,17 @@ class TestCustomerCare:
             # Check if XSS was blocked
             try:
                 alert = driver.switch_to.alert
-                print("✗ FAIL: XSS vulnerability - alert triggered")
+                print("[FAIL] FAIL: XSS vulnerability - alert triggered")
                 alert.accept()
                 self.failed += 1
             except:
-                print("✓ PASS: XSS attack prevented - no script execution")
+                print("[PASS] PASS: XSS attack prevented - no script execution")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_CARE_06_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -394,19 +394,19 @@ class TestCustomerCare:
             page_source = driver.page_source.lower()
 
             if "error" in page_source:
-                print("✓ PASS: System validates input length")
+                print("[PASS] PASS: System validates input length")
                 self.passed += 1
             elif "thank you" in page_source:
-                print("✓ PASS: System handles long input gracefully")
+                print("[PASS] PASS: System handles long input gracefully")
                 self.passed += 1
             else:
-                print("✓ PASS: Long input test completed - system stable")
+                print("[PASS] PASS: Long input test completed - system stable")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_CARE_07_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:

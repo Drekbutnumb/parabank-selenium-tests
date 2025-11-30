@@ -34,7 +34,7 @@ class TestTransferFunds:
         """Capture screenshot at critical test moments"""
         filepath = f"{self.screenshot_dir}/{name}.png"
         driver.save_screenshot(filepath)
-        print(f"    📸 Screenshot saved: {filepath}")
+        print(f"    [Screenshot] Screenshot saved: {filepath}")
         return filepath
 
     def setup(self, driver):
@@ -90,17 +90,17 @@ class TestTransferFunds:
                     EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Transfer Complete')]"))
                 )
                 self.take_screenshot(driver, "TC_TRANSFER_01_03_success")
-                print("✓ PASS: Transfer of $100 completed successfully")
+                print("[PASS] PASS: Transfer of $100 completed successfully")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_TRANSFER_01_03_failed")
-                print("✗ FAIL: Transfer completion message not found")
+                print("[FAIL] FAIL: Transfer completion message not found")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_TRANSFER_01_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -139,21 +139,21 @@ class TestTransferFunds:
                 error_message = wait.until(
                     EC.presence_of_element_located((By.CLASS_NAME, "error"))
                 )
-                print("✓ PASS: Insufficient funds error displayed correctly")
+                print("[PASS] PASS: Insufficient funds error displayed correctly")
                 self.passed += 1
             except:
                 success_check = driver.find_elements(By.XPATH, "//*[contains(text(), 'Transfer Complete')]")
                 if not success_check:
-                    print("✓ PASS: Transfer blocked (no success message)")
+                    print("[PASS] PASS: Transfer blocked (no success message)")
                     self.passed += 1
                 else:
-                    print("✗ FAIL: Transfer should not succeed with insufficient funds")
+                    print("[FAIL] FAIL: Transfer should not succeed with insufficient funds")
                     self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_TRANSFER_02_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -192,16 +192,16 @@ class TestTransferFunds:
                 error_message = wait.until(
                     EC.presence_of_element_located((By.CLASS_NAME, "error"))
                 )
-                print("✓ PASS: Zero amount validation error displayed")
+                print("[PASS] PASS: Zero amount validation error displayed")
                 self.passed += 1
             except:
-                print("✗ FAIL: No validation error for zero amount transfer")
+                print("[FAIL] FAIL: No validation error for zero amount transfer")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_TRANSFER_03_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -239,17 +239,17 @@ class TestTransferFunds:
                     EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Transfer Complete')]"))
                 )
                 self.take_screenshot(driver, "TC_TRANSFER_05_02_success")
-                print("✓ PASS: Decimal amount transfer of $25.75 completed successfully")
+                print("[PASS] PASS: Decimal amount transfer of $25.75 completed successfully")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_TRANSFER_05_02_failed")
-                print("✗ FAIL: Decimal amount transfer failed")
+                print("[FAIL] FAIL: Decimal amount transfer failed")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_TRANSFER_05_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -288,19 +288,19 @@ class TestTransferFunds:
             # Check for proper handling of negative amount
             page_source = driver.page_source.lower()
             if "error" in page_source or "invalid" in page_source:
-                print("✓ PASS: Negative amount properly rejected with error message")
+                print("[PASS] PASS: Negative amount properly rejected with error message")
                 self.passed += 1
             elif "transfer complete" not in page_source:
-                print("✓ PASS: Negative amount transfer was blocked")
+                print("[PASS] PASS: Negative amount transfer was blocked")
                 self.passed += 1
             else:
-                print("✗ FAIL: Negative amount transfer should be rejected")
+                print("[FAIL] FAIL: Negative amount transfer should be rejected")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_TRANSFER_06_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -347,19 +347,19 @@ class TestTransferFunds:
             # Document the behavior - some systems allow this, others don't
             page_source = driver.page_source.lower()
             if "transfer complete" in page_source:
-                print("✓ PASS: System allows same-account transfer (self-transfer permitted)")
+                print("[PASS] PASS: System allows same-account transfer (self-transfer permitted)")
                 self.passed += 1
             elif "error" in page_source:
-                print("✓ PASS: System properly prevents same-account transfer")
+                print("[PASS] PASS: System properly prevents same-account transfer")
                 self.passed += 1
             else:
-                print("✓ PASS: Same account transfer test completed - behavior documented")
+                print("[PASS] PASS: Same account transfer test completed - behavior documented")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_TRANSFER_07_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:

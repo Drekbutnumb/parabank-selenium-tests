@@ -33,7 +33,7 @@ class TestRegistration:
     def take_screenshot(self, driver, name):
         filepath = f"{self.screenshot_dir}/{name}.png"
         driver.save_screenshot(filepath)
-        print(f"    📸 Screenshot saved: {filepath}")
+        print(f"    [Screenshot] Screenshot saved: {filepath}")
         return filepath
 
     def generate_unique_username(self):
@@ -82,21 +82,21 @@ class TestRegistration:
                     EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), 'Welcome {unique_username}')]"))
                 )
                 self.take_screenshot(driver, "TC_REG_01_04_success")
-                print(f"✓ PASS: User '{unique_username}' registered successfully")
+                print(f"[PASS] PASS: User '{unique_username}' registered successfully")
                 self.passed += 1
             except:
                 self.take_screenshot(driver, "TC_REG_01_04_result")
                 if "Welcome" in driver.page_source or "created" in driver.page_source.lower():
-                    print(f"✓ PASS: User registration completed successfully")
+                    print(f"[PASS] PASS: User registration completed successfully")
                     self.passed += 1
                 else:
-                    print("✗ FAIL: Registration success message not found")
+                    print("[FAIL] FAIL: Registration success message not found")
                     self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_REG_01_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -120,16 +120,16 @@ class TestRegistration:
 
             errors = driver.find_elements(By.CLASS_NAME, "error")
             if len(errors) > 0:
-                print(f"✓ PASS: {len(errors)} validation error(s) displayed for empty fields")
+                print(f"[PASS] PASS: {len(errors)} validation error(s) displayed for empty fields")
                 self.passed += 1
             else:
-                print("✗ FAIL: No validation errors displayed")
+                print("[FAIL] FAIL: No validation errors displayed")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_REG_02_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -164,16 +164,16 @@ class TestRegistration:
             self.take_screenshot(driver, "TC_REG_03_02_result")
 
             if "already exists" in driver.page_source.lower() or "error" in driver.page_source.lower():
-                print("✓ PASS: Duplicate username error displayed correctly")
+                print("[PASS] PASS: Duplicate username error displayed correctly")
                 self.passed += 1
             else:
-                print("✓ PASS: System handled duplicate username scenario")
+                print("[PASS] PASS: System handled duplicate username scenario")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_REG_03_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -208,16 +208,16 @@ class TestRegistration:
             self.take_screenshot(driver, "TC_REG_04_02_result")
 
             if "match" in driver.page_source.lower() or "error" in driver.page_source.lower():
-                print("✓ PASS: Password mismatch error displayed correctly")
+                print("[PASS] PASS: Password mismatch error displayed correctly")
                 self.passed += 1
             else:
-                print("✗ FAIL: No password mismatch validation")
+                print("[FAIL] FAIL: No password mismatch validation")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_REG_04_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -252,13 +252,13 @@ class TestRegistration:
 
             self.take_screenshot(driver, "TC_REG_05_02_result")
 
-            print("✓ PASS: System accepted registration (Note: No SSN format validation - documented bug)")
+            print("[PASS] PASS: System accepted registration (Note: No SSN format validation - documented bug)")
             self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_REG_05_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -299,16 +299,16 @@ class TestRegistration:
             # Check for database error or successful handling
             page_source_lower = driver.page_source.lower()
             if "sql" not in page_source_lower and "database error" not in page_source_lower:
-                print("✓ PASS: SQL injection attempt handled safely - no database errors exposed")
+                print("[PASS] PASS: SQL injection attempt handled safely - no database errors exposed")
                 self.passed += 1
             else:
-                print("✗ FAIL: Potential SQL injection vulnerability detected")
+                print("[FAIL] FAIL: Potential SQL injection vulnerability detected")
                 self.failed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_REG_06_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
@@ -350,17 +350,17 @@ class TestRegistration:
             # Check if script tag is not being executed (it would be escaped or removed)
             try:
                 alert = driver.switch_to.alert
-                print("✗ FAIL: XSS vulnerability detected - alert was triggered")
+                print("[FAIL] FAIL: XSS vulnerability detected - alert was triggered")
                 alert.accept()
                 self.failed += 1
             except:
-                print("✓ PASS: XSS attack prevented - no script execution")
+                print("[PASS] PASS: XSS attack prevented - no script execution")
                 self.passed += 1
 
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_REG_07_error")
-            print(f"✗ FAIL: {str(e)}")
+            print(f"[FAIL] FAIL: {str(e)}")
             self.failed += 1
         finally:
             if driver:
