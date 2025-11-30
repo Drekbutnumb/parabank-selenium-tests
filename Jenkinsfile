@@ -8,6 +8,12 @@ pipeline {
             }
         }
 
+        stage('Run Registration Tests') {
+            steps {
+                bat 'python test_selenium1.py'
+            }
+        }
+
         stage('Run Login Tests') {
             steps {
                 bat 'python test_selenium2.py'
