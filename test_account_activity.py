@@ -49,9 +49,9 @@ class TestAccountActivity:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             self.take_screenshot(driver, "TC_ACTIVITY_01_01_overview")
-            
+
             # Check accounts table present
             try:
                 accounts_table = driver.find_element(By.ID, "accountTable")
@@ -65,7 +65,7 @@ class TestAccountActivity:
                 else:
                     print("[FAIL] FAIL: Accounts Overview not accessible")
                     self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACTIVITY_01_error")
@@ -81,21 +81,21 @@ class TestAccountActivity:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             # Wait for accounts to load
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_ACTIVITY_02_01_accounts_list")
-            
+
             # Click first account link
             account_links = driver.find_elements(By.XPATH, "//a[contains(@href, 'activity.htm')]")
-            
+
             if len(account_links) > 0:
                 account_links[0].click()
                 time.sleep(2)
-                
+
                 self.take_screenshot(driver, "TC_ACTIVITY_02_02_account_detail")
-                
+
                 page_source = driver.page_source.lower()
                 if "account details" in page_source or "account activity" in page_source:
                     print("[PASS] PASS: Account details page opened")
@@ -106,7 +106,7 @@ class TestAccountActivity:
             else:
                 print("[FAIL] FAIL: No account links found")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACTIVITY_02_error")
@@ -122,28 +122,28 @@ class TestAccountActivity:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             # Navigate to account activity
             time.sleep(2)
             account_links = driver.find_elements(By.XPATH, "//a[contains(@href, 'activity.htm')]")
-            
+
             if len(account_links) > 0:
                 account_links[0].click()
                 time.sleep(2)
-                
+
                 self.take_screenshot(driver, "TC_ACTIVITY_03_01_activity_page")
-                
+
                 # Try to find and use month filter
                 try:
                     month_select = Select(driver.find_element(By.ID, "month"))
                     month_select.select_by_value("January")
-                    
+
                     go_button = driver.find_element(By.XPATH, "//input[@value='Go']")
                     go_button.click()
                     time.sleep(2)
-                    
+
                     self.take_screenshot(driver, "TC_ACTIVITY_03_02_filtered")
-                    
+
                     print("[PASS] PASS: Month filter applied successfully")
                     self.passed += 1
                 except:
@@ -152,7 +152,7 @@ class TestAccountActivity:
             else:
                 print("[FAIL] FAIL: No accounts to test activity")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACTIVITY_03_error")
@@ -168,26 +168,26 @@ class TestAccountActivity:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             time.sleep(2)
             account_links = driver.find_elements(By.XPATH, "//a[contains(@href, 'activity.htm')]")
-            
+
             if len(account_links) > 0:
                 account_links[0].click()
                 time.sleep(2)
-                
+
                 self.take_screenshot(driver, "TC_ACTIVITY_04_01_before_filter")
-                
+
                 try:
                     type_select = Select(driver.find_element(By.ID, "transactionType"))
                     type_select.select_by_value("Credit")
-                    
+
                     go_button = driver.find_element(By.XPATH, "//input[@value='Go']")
                     go_button.click()
                     time.sleep(2)
-                    
+
                     self.take_screenshot(driver, "TC_ACTIVITY_04_02_credit_filter")
-                    
+
                     print("[PASS] PASS: Transaction type filter applied")
                     self.passed += 1
                 except:
@@ -196,7 +196,7 @@ class TestAccountActivity:
             else:
                 print("[FAIL] FAIL: No accounts available")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACTIVITY_04_error")
@@ -212,25 +212,25 @@ class TestAccountActivity:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             time.sleep(2)
             account_links = driver.find_elements(By.XPATH, "//a[contains(@href, 'activity.htm')]")
-            
+
             if len(account_links) > 0:
                 account_links[0].click()
                 time.sleep(2)
-                
+
                 self.take_screenshot(driver, "TC_ACTIVITY_05_01_activity_list")
-                
+
                 # Try to click a transaction
                 trans_links = driver.find_elements(By.XPATH, "//a[contains(@href, 'transaction.htm')]")
-                
+
                 if len(trans_links) > 0:
                     trans_links[0].click()
                     time.sleep(2)
-                    
+
                     self.take_screenshot(driver, "TC_ACTIVITY_05_02_transaction_detail")
-                    
+
                     page_source = driver.page_source.lower()
                     if "transaction detail" in page_source or "transaction id" in page_source:
                         print("[PASS] PASS: Transaction detail page opened")
@@ -244,7 +244,7 @@ class TestAccountActivity:
             else:
                 print("[FAIL] FAIL: No accounts available")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACTIVITY_05_error")
@@ -260,14 +260,14 @@ class TestAccountActivity:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_ACTIVITY_06_01_balance_check")
-            
+
             # Check if balance is displayed
             page_source = driver.page_source
-            
+
             # Look for balance indicator ($ sign with numbers)
             if "$" in page_source:
                 print("[PASS] PASS: Account balance displayed with currency")
@@ -275,7 +275,7 @@ class TestAccountActivity:
             else:
                 print("[FAIL] FAIL: BUG - No balance displayed")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACTIVITY_06_error")
@@ -291,25 +291,28 @@ class TestAccountActivity:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             # Try to access a different account ID directly
             driver.get("https://parabank.parasoft.com/parabank/activity.htm?id=99999")
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_ACTIVITY_07_01_idor_attempt")
-            
+
             page_source = driver.page_source.lower()
-            
-            if "error" in page_source or "not found" in page_source or "access denied" in page_source:
-                print("[PASS] PASS: Unauthorized account access blocked")
+
+            if "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed instead of proper access denial")
+                self.failed += 1
+            elif "access denied" in page_source or "unauthorized" in page_source:
+                print("[PASS] PASS: Unauthorized account access properly blocked")
                 self.passed += 1
             elif "account details" in page_source and "$" in driver.page_source:
                 print("[FAIL] FAIL: SECURITY BUG - IDOR vulnerability, accessed other account")
                 self.failed += 1
             else:
-                print("[PASS] PASS: Account not accessible (may not exist)")
+                print("[PASS] PASS: Account not accessible")
                 self.passed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_ACTIVITY_07_error")

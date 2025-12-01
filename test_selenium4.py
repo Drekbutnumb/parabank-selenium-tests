@@ -135,17 +135,19 @@ class TestTransferFunds:
 
             self.take_screenshot(driver, "TC_TRANSFER_02_02_result")
 
-            # Check page for any response
             page_source = driver.page_source.lower()
-            if "error" in page_source or "insufficient" in page_source:
+            if "transfer complete" in page_source:
+                print("[FAIL] FAIL: BUG - System accepted $999M transfer without balance check")
+                self.failed += 1
+            elif "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed instead of validation error")
+                self.failed += 1
+            elif "insufficient" in page_source:
                 print("[PASS] PASS: Insufficient funds error displayed correctly")
                 self.passed += 1
-            elif "transfer complete" in page_source:
-                print("[PASS] PASS: Transfer processed (Note: No balance validation in system)")
-                self.passed += 1
             else:
-                print("[PASS] PASS: Large amount transfer test completed - behavior documented")
-                self.passed += 1
+                print("[FAIL] FAIL: No proper validation for large amount")
+                self.failed += 1
 
         except Exception as e:
             if driver:
@@ -185,16 +187,15 @@ class TestTransferFunds:
 
             self.take_screenshot(driver, "TC_TRANSFER_03_02_result")
 
-            # Document the behavior
             page_source = driver.page_source.lower()
-            if "error" in page_source:
-                print("[PASS] PASS: Zero amount validation error displayed")
-                self.passed += 1
-            elif "transfer complete" in page_source:
-                print("[PASS] PASS: Zero amount accepted (Note: No zero validation - documented)")
-                self.passed += 1
+            if "transfer complete" in page_source:
+                print("[FAIL] FAIL: BUG - System accepted $0 transfer (should reject)")
+                self.failed += 1
+            elif "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed instead of validation error")
+                self.failed += 1
             else:
-                print("[PASS] PASS: Zero amount test completed - behavior documented")
+                print("[PASS] PASS: Zero amount transfer rejected")
                 self.passed += 1
 
         except Exception as e:
@@ -231,16 +232,18 @@ class TestTransferFunds:
 
             self.take_screenshot(driver, "TC_TRANSFER_04_02_result")
 
-            # Check for validation error or any response
             page_source = driver.page_source.lower()
-            if "error" in page_source or "required" in page_source or "enter" in page_source:
+            if "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed on empty amount (should show validation)")
+                self.failed += 1
+            elif "transfer complete" in page_source:
+                print("[FAIL] FAIL: BUG - Empty amount transfer was accepted")
+                self.failed += 1
+            elif "required" in page_source or "enter" in page_source or "please" in page_source:
                 print("[PASS] PASS: Empty amount validation error displayed correctly")
                 self.passed += 1
-            elif "transfer complete" not in page_source:
-                print("[PASS] PASS: Empty amount transfer was blocked")
-                self.passed += 1
             else:
-                print("[PASS] PASS: Empty amount test completed - behavior documented")
+                print("[PASS] PASS: Empty amount transfer was blocked")
                 self.passed += 1
 
         except Exception as e:
@@ -330,16 +333,15 @@ class TestTransferFunds:
 
             self.take_screenshot(driver, "TC_TRANSFER_06_02_result")
 
-            # Check for proper handling of negative amount
             page_source = driver.page_source.lower()
-            if "error" in page_source or "invalid" in page_source:
-                print("[PASS] PASS: Negative amount properly rejected with error message")
-                self.passed += 1
-            elif "transfer complete" not in page_source:
-                print("[PASS] PASS: Negative amount transfer was blocked")
-                self.passed += 1
+            if "transfer complete" in page_source:
+                print("[FAIL] FAIL: BUG - System accepted NEGATIVE amount transfer")
+                self.failed += 1
+            elif "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed on negative amount")
+                self.failed += 1
             else:
-                print("[PASS] PASS: Negative amount test completed - behavior documented")
+                print("[PASS] PASS: Negative amount properly rejected")
                 self.passed += 1
 
         except Exception as e:
@@ -389,17 +391,20 @@ class TestTransferFunds:
 
             self.take_screenshot(driver, "TC_TRANSFER_07_02_result")
 
-            # Document the behavior - some systems allow this, others don't
+            # Same-account transfer should be prevented - it's a logical error
             page_source = driver.page_source.lower()
-            if "transfer complete" in page_source:
-                print("[PASS] PASS: System allows same-account transfer (self-transfer permitted)")
-                self.passed += 1
-            elif "error" in page_source:
+            if "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed on same-account transfer")
+                self.failed += 1
+            elif "transfer complete" in page_source:
+                print("[FAIL] FAIL: BUG - System allowed same-account transfer (should be prevented)")
+                self.failed += 1
+            elif "cannot transfer" in page_source or "same account" in page_source:
                 print("[PASS] PASS: System properly prevents same-account transfer")
                 self.passed += 1
             else:
-                print("[PASS] PASS: Same account transfer test completed - behavior documented")
-                self.passed += 1
+                print("[FAIL] FAIL: Unexpected behavior on same-account transfer")
+                self.failed += 1
 
         except Exception as e:
             if driver:

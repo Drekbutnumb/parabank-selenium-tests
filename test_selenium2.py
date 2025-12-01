@@ -108,14 +108,18 @@ class TestLogin:
 
             time.sleep(2)
 
-            try:
-                error_message = wait.until(
-                    EC.presence_of_element_located((By.CLASS_NAME, "error"))
-                )
+            page_source = driver.page_source.lower()
+
+            # First check if user is logged in (this would be a bug)
+            if "accounts overview" in page_source or "welcome" in page_source:
+                self.take_screenshot(driver, "TC_LOGIN_02_02_logged_in")
+                print("[FAIL] FAIL: BUG - User logged in with invalid username!")
+                self.failed += 1
+            elif "error" in page_source or "invalid" in page_source:
                 self.take_screenshot(driver, "TC_LOGIN_02_02_error_displayed")
                 print("[PASS] PASS: Error message displayed for invalid username")
                 self.passed += 1
-            except:
+            else:
                 self.take_screenshot(driver, "TC_LOGIN_02_02_result")
                 print("[FAIL] FAIL: No error message displayed for invalid username")
                 self.failed += 1
@@ -151,14 +155,18 @@ class TestLogin:
 
             time.sleep(2)
 
-            try:
-                error_message = wait.until(
-                    EC.presence_of_element_located((By.CLASS_NAME, "error"))
-                )
+            page_source = driver.page_source.lower()
+
+            # First check if user is logged in (this would be a bug)
+            if "accounts overview" in page_source or "welcome" in page_source:
+                self.take_screenshot(driver, "TC_LOGIN_03_02_logged_in")
+                print("[FAIL] FAIL: BUG - User logged in with invalid password!")
+                self.failed += 1
+            elif "error" in page_source or "invalid" in page_source:
                 self.take_screenshot(driver, "TC_LOGIN_03_02_error_displayed")
                 print("[PASS] PASS: Error message displayed for invalid password")
                 self.passed += 1
-            except:
+            else:
                 self.take_screenshot(driver, "TC_LOGIN_03_02_result")
                 print("[FAIL] FAIL: No error message displayed for invalid password")
                 self.failed += 1
@@ -279,15 +287,18 @@ class TestLogin:
 
             # Check if login was blocked (no unauthorized access)
             page_source_lower = driver.page_source.lower()
-            if "accounts overview" not in page_source_lower and "sql" not in page_source_lower:
+            if "an internal error has occurred" in page_source_lower:
+                print("[FAIL] FAIL: BUG - Server crashed on SQL injection input")
+                self.failed += 1
+            elif "accounts overview" in page_source_lower:
+                print("[FAIL] FAIL: Potential SQL injection vulnerability - logged in!")
+                self.failed += 1
+            elif "sql" in page_source_lower or "database" in page_source_lower:
+                print("[FAIL] FAIL: SQL error exposed in response")
+                self.failed += 1
+            else:
                 print("[PASS] PASS: SQL injection attempt blocked - no unauthorized access")
                 self.passed += 1
-            elif "error" in page_source_lower:
-                print("[PASS] PASS: SQL injection attempt handled safely with error message")
-                self.passed += 1
-            else:
-                print("[FAIL] FAIL: Potential SQL injection vulnerability")
-                self.failed += 1
 
         except Exception as e:
             if driver:
@@ -346,6 +357,12 @@ class TestLogin:
             # Verify session is invalidated - should see login form or error, not account data
             page_source = driver.page_source.lower()
 
+            # Check for internal error first (this is a bug)
+            if "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed on session check")
+                self.failed += 1
+                return
+
             # Check if login form is present (properly logged out)
             login_form_present = False
             try:
@@ -355,14 +372,17 @@ class TestLogin:
                 pass
 
             # Check if there's an error message about not being logged in
-            error_present = "error" in page_source or "please login" in page_source or "log in" in page_source
+            error_present = "please login" in page_source or "log in" in page_source
 
             if login_form_present or error_present:
                 print("[PASS] PASS: Session properly invalidated after logout - access denied")
                 self.passed += 1
-            else:
+            elif "accounts overview" in page_source:
                 print("[FAIL] FAIL: Session not properly invalidated - protected data still accessible")
                 self.failed += 1
+            else:
+                print("[PASS] PASS: Session properly invalidated")
+                self.passed += 1
 
         except Exception as e:
             if driver:

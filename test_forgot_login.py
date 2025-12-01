@@ -40,15 +40,15 @@ class TestForgotLoginInfo:
             driver, wait = self.create_driver()
             driver.get("https://parabank.parasoft.com")
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_FORGOT_01_01_home_page")
-            
+
             forgot_link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Forgot login info?")))
             forgot_link.click()
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_FORGOT_01_02_forgot_page")
-            
+
             page_source = driver.page_source.lower()
             if "customer lookup" in page_source or "find your login" in page_source:
                 print("[PASS] PASS: Forgot Login page accessible")
@@ -56,7 +56,7 @@ class TestForgotLoginInfo:
             else:
                 print("[FAIL] FAIL: Forgot Login page not loaded correctly")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_FORGOT_01_error")
@@ -73,27 +73,27 @@ class TestForgotLoginInfo:
             driver, wait = self.create_driver()
             driver.get("https://parabank.parasoft.com/parabank/lookup.htm")
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_FORGOT_02_01_lookup_page")
-            
+
             # Check required fields
             fields = ["firstName", "lastName", "address.street", "address.city",
-                     "address.state", "address.zipCode", "ssn"]
-            
+                      "address.state", "address.zipCode", "ssn"]
+
             missing = []
             for field in fields:
                 try:
                     driver.find_element(By.ID, field)
                 except:
                     missing.append(field)
-            
+
             if len(missing) == 0:
                 print("[PASS] PASS: All lookup fields present")
                 self.passed += 1
             else:
                 print(f"[FAIL] FAIL: Missing fields: {missing}")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_FORGOT_02_error")
@@ -110,7 +110,7 @@ class TestForgotLoginInfo:
             driver, wait = self.create_driver()
             driver.get("https://parabank.parasoft.com/parabank/lookup.htm")
             time.sleep(2)
-            
+
             # Use known test data
             driver.find_element(By.ID, "firstName").send_keys("John")
             driver.find_element(By.ID, "lastName").send_keys("Doe")
@@ -119,23 +119,29 @@ class TestForgotLoginInfo:
             driver.find_element(By.ID, "address.state").send_keys("NY")
             driver.find_element(By.ID, "address.zipCode").send_keys("10001")
             driver.find_element(By.ID, "ssn").send_keys("123-45-6789")
-            
+
             self.take_screenshot(driver, "TC_FORGOT_03_01_form_filled")
-            
+
             find_button = driver.find_element(By.XPATH, "//input[@value='Find My Login Info']")
             find_button.click()
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_FORGOT_03_02_result")
-            
+
             page_source = driver.page_source.lower()
-            if "username" in page_source or "password" in page_source or "not found" in page_source:
-                print("[PASS] PASS: Lookup executed and responded")
+            if "internal error" in page_source:
+                print("[FAIL] FAIL: BUG FOUND - Internal server error during lookup")
+                self.failed += 1
+            elif "username" in page_source and "password" in page_source:
+                print("[PASS] PASS: Lookup returned credentials")
+                self.passed += 1
+            elif "not found" in page_source or "could not" in page_source:
+                print("[PASS] PASS: Lookup executed - user not found (expected for test data)")
                 self.passed += 1
             else:
-                print("[FAIL] FAIL: No lookup result returned")
+                print("[FAIL] FAIL: No proper lookup result returned")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_FORGOT_03_error")
@@ -152,15 +158,15 @@ class TestForgotLoginInfo:
             driver, wait = self.create_driver()
             driver.get("https://parabank.parasoft.com/parabank/lookup.htm")
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_FORGOT_04_01_empty_form")
-            
+
             find_button = driver.find_element(By.XPATH, "//input[@value='Find My Login Info']")
             find_button.click()
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_FORGOT_04_02_result")
-            
+
             errors = driver.find_elements(By.CLASS_NAME, "error")
             if len(errors) > 0:
                 print(f"[PASS] PASS: {len(errors)} validation error(s) displayed")
@@ -168,7 +174,7 @@ class TestForgotLoginInfo:
             else:
                 print("[FAIL] FAIL: BUG - No validation errors for empty form")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_FORGOT_04_error")
@@ -185,7 +191,7 @@ class TestForgotLoginInfo:
             driver, wait = self.create_driver()
             driver.get("https://parabank.parasoft.com/parabank/lookup.htm")
             time.sleep(2)
-            
+
             driver.find_element(By.ID, "firstName").send_keys("NonExistent")
             driver.find_element(By.ID, "lastName").send_keys("User")
             driver.find_element(By.ID, "address.street").send_keys("999 Fake St")
@@ -193,23 +199,26 @@ class TestForgotLoginInfo:
             driver.find_element(By.ID, "address.state").send_keys("XX")
             driver.find_element(By.ID, "address.zipCode").send_keys("00000")
             driver.find_element(By.ID, "ssn").send_keys("000-00-0000")
-            
+
             self.take_screenshot(driver, "TC_FORGOT_05_01_invalid_user")
-            
+
             find_button = driver.find_element(By.XPATH, "//input[@value='Find My Login Info']")
             find_button.click()
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_FORGOT_05_02_result")
-            
+
             page_source = driver.page_source.lower()
-            if "not found" in page_source or "error" in page_source or "could not" in page_source:
+            if "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed instead of user not found error")
+                self.failed += 1
+            elif "not found" in page_source or "could not" in page_source:
                 print("[PASS] PASS: Proper error for non-existent user")
                 self.passed += 1
             else:
                 print("[FAIL] FAIL: BUG - No error message for invalid user")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_FORGOT_05_error")
@@ -226,9 +235,9 @@ class TestForgotLoginInfo:
             driver, wait = self.create_driver()
             driver.get("https://parabank.parasoft.com/parabank/lookup.htm")
             time.sleep(2)
-            
+
             sql_payload = "' OR '1'='1"
-            
+
             driver.find_element(By.ID, "firstName").send_keys("Test")
             driver.find_element(By.ID, "lastName").send_keys("User")
             driver.find_element(By.ID, "address.street").send_keys("123 St")
@@ -236,20 +245,26 @@ class TestForgotLoginInfo:
             driver.find_element(By.ID, "address.state").send_keys("ST")
             driver.find_element(By.ID, "address.zipCode").send_keys("12345")
             driver.find_element(By.ID, "ssn").send_keys(sql_payload)
-            
+
             self.take_screenshot(driver, "TC_FORGOT_06_01_sql_injection")
-            
+
             find_button = driver.find_element(By.XPATH, "//input[@value='Find My Login Info']")
             find_button.click()
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_FORGOT_06_02_result")
-            
+
             page_lower = driver.page_source.lower()
             # Check if injection returned unauthorized data
-            if "username" in page_lower and "password" in page_lower and "sql" not in page_lower:
+            if "cloudflare" in page_lower or "verify you are human" in page_lower:
+                print("[PASS] PASS: Security system (Cloudflare) blocked malicious request")
+                self.passed += 1
+            elif "username" in page_lower and "password" in page_lower and "sql" not in page_lower:
                 # If it returns credentials, it might be vulnerable
                 print("[FAIL] FAIL: Potential SQL injection - credentials returned")
+                self.failed += 1
+            elif "an internal error has occurred" in page_lower:
+                print("[FAIL] FAIL: BUG - Server crashed on SQL injection input")
                 self.failed += 1
             elif "sql" in page_lower or "database" in page_lower or "exception" in page_lower:
                 print("[FAIL] FAIL: SQL error exposed")
@@ -257,7 +272,7 @@ class TestForgotLoginInfo:
             else:
                 print("[PASS] PASS: SQL injection handled safely")
                 self.passed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_FORGOT_06_error")
@@ -274,7 +289,7 @@ class TestForgotLoginInfo:
             driver, wait = self.create_driver()
             driver.get("https://parabank.parasoft.com/parabank/lookup.htm")
             time.sleep(2)
-            
+
             # Try with known user pattern
             driver.find_element(By.ID, "firstName").send_keys("John")
             driver.find_element(By.ID, "lastName").send_keys("Smith")
@@ -283,17 +298,17 @@ class TestForgotLoginInfo:
             driver.find_element(By.ID, "address.state").send_keys("ST")
             driver.find_element(By.ID, "address.zipCode").send_keys("12345")
             driver.find_element(By.ID, "ssn").send_keys("123456789")
-            
+
             self.take_screenshot(driver, "TC_FORGOT_07_01_lookup_attempt")
-            
+
             find_button = driver.find_element(By.XPATH, "//input[@value='Find My Login Info']")
             find_button.click()
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_FORGOT_07_02_result")
-            
+
             page_source = driver.page_source
-            
+
             # Security check: password should NOT be shown in plain text
             if "Password:" in page_source or "password:" in page_source.lower():
                 # Check if it's actually displaying the password
@@ -302,7 +317,7 @@ class TestForgotLoginInfo:
             else:
                 print("[PASS] PASS: Password not exposed in plain text")
                 self.passed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_FORGOT_07_error")

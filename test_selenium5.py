@@ -307,18 +307,23 @@ class TestAccountsOverview:
 
             page_source = driver.page_source.lower()
 
-            # Check if redirected to login or blocked
-            if "login" in page_source or "username" in page_source:
+            # Check for internal error first (this is a bug - server crash)
+            if "an internal error has occurred" in page_source:
+                self.take_screenshot(driver, "TC_ACCOUNTS_07_02_server_crash")
+                print("[FAIL] FAIL: BUG - Server crashed instead of proper access denial")
+                self.failed += 1
+            # Check if redirected to login or blocked properly
+            elif "login" in page_source or "username" in page_source:
                 self.take_screenshot(driver, "TC_ACCOUNTS_07_02_blocked")
                 print("[PASS] PASS: Direct account access blocked - redirected to login")
                 self.passed += 1
-            elif "error" in page_source:
-                self.take_screenshot(driver, "TC_ACCOUNTS_07_02_error_shown")
-                print("[PASS] PASS: Direct account access blocked - error displayed")
-                self.passed += 1
-            else:
+            elif "account" in page_source and "balance" in page_source:
                 self.take_screenshot(driver, "TC_ACCOUNTS_07_02_security_issue")
-                print("[WARNING] PASS (Security Note): Page accessible without login - potential security concern")
+                print("[FAIL] FAIL: SECURITY BUG - Account data accessible without login")
+                self.failed += 1
+            else:
+                self.take_screenshot(driver, "TC_ACCOUNTS_07_02_blocked")
+                print("[PASS] PASS: Direct account access blocked")
                 self.passed += 1
 
         except Exception as e:

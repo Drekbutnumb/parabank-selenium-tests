@@ -163,9 +163,16 @@ class TestRegistration:
 
             self.take_screenshot(driver, "TC_REG_03_02_result")
 
-            if "already exists" in driver.page_source.lower() or "error" in driver.page_source.lower():
+            page_source = driver.page_source.lower()
+            if "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed on duplicate username")
+                self.failed += 1
+            elif "already exists" in page_source or "username is taken" in page_source:
                 print("[PASS] PASS: Duplicate username error displayed correctly")
                 self.passed += 1
+            elif "welcome" in page_source:
+                print("[FAIL] FAIL: BUG - Duplicate username was accepted")
+                self.failed += 1
             else:
                 print("[PASS] PASS: System handled duplicate username scenario")
                 self.passed += 1
@@ -207,9 +214,16 @@ class TestRegistration:
 
             self.take_screenshot(driver, "TC_REG_04_02_result")
 
-            if "match" in driver.page_source.lower() or "error" in driver.page_source.lower():
+            page_source = driver.page_source.lower()
+            if "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed on password mismatch")
+                self.failed += 1
+            elif "match" in page_source or "passwords do not match" in page_source:
                 print("[PASS] PASS: Password mismatch error displayed correctly")
                 self.passed += 1
+            elif "welcome" in page_source:
+                print("[FAIL] FAIL: BUG - Registration accepted with mismatched passwords")
+                self.failed += 1
             else:
                 print("[FAIL] FAIL: No password mismatch validation")
                 self.failed += 1
@@ -252,8 +266,16 @@ class TestRegistration:
 
             self.take_screenshot(driver, "TC_REG_05_02_result")
 
-            print("[PASS] PASS: System accepted registration (Note: No SSN format validation - documented bug)")
-            self.passed += 1
+            page_source = driver.page_source.lower()
+            if "welcome" in page_source:
+                print("[FAIL] FAIL: BUG - System accepted invalid SSN format (no validation)")
+                self.failed += 1
+            elif "ssn" in page_source and ("invalid" in page_source or "error" in page_source or "format" in page_source):
+                print("[PASS] PASS: Invalid SSN format rejected with error message")
+                self.passed += 1
+            else:
+                print("[PASS] PASS: Invalid SSN registration was blocked")
+                self.passed += 1
 
         except Exception as e:
             if driver:

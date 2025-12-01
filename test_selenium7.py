@@ -217,14 +217,16 @@ class TestCustomerCare:
 
             self.take_screenshot(driver, "TC_CARE_04_02_result")
 
-            # Check page response
             page_source = driver.page_source.lower()
 
             if "thank you" in page_source:
-                print("[WARNING] PASS: Form accepted invalid email (no email validation)")
+                print("[FAIL] FAIL: BUG - Form accepted invalid email format (no validation)")
+                self.failed += 1
+            elif "email" in page_source and ("invalid" in page_source or "error" in page_source or "format" in page_source):
+                print("[PASS] PASS: Invalid email format rejected with error message")
                 self.passed += 1
             else:
-                print("[PASS] PASS: Form handled invalid email input")
+                print("[PASS] PASS: Form handled invalid email input correctly")
                 self.passed += 1
 
         except Exception as e:
@@ -277,9 +279,12 @@ class TestCustomerCare:
             if "thank you" in page_source:
                 print("[PASS] PASS: Form submitted without phone (optional field)")
                 self.passed += 1
-            else:
-                print("[PASS] PASS: Form processed without phone number")
+            elif "phone" in page_source and "required" in page_source:
+                print("[PASS] PASS: Phone field validation working - phone is required")
                 self.passed += 1
+            else:
+                print("[FAIL] FAIL: Unexpected behavior - no clear validation response")
+                self.failed += 1
 
         except Exception as e:
             if driver:
@@ -393,11 +398,14 @@ class TestCustomerCare:
             # Check system response
             page_source = driver.page_source.lower()
 
-            if "error" in page_source:
-                print("[PASS] PASS: System validates input length")
-                self.passed += 1
+            if "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed on long input")
+                self.failed += 1
             elif "thank you" in page_source:
                 print("[PASS] PASS: System handles long input gracefully")
+                self.passed += 1
+            elif "too long" in page_source or "maximum" in page_source:
+                print("[PASS] PASS: System validates input length")
                 self.passed += 1
             else:
                 print("[PASS] PASS: Long input test completed - system stable")

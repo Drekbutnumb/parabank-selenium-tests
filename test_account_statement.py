@@ -49,24 +49,24 @@ class TestAccountStatement:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             time.sleep(2)
-            
+
             # Click on first account
             account_links = driver.find_elements(By.XPATH, "//a[contains(@href, 'activity.htm')]")
-            
+
             if len(account_links) > 0:
                 account_links[0].click()
                 time.sleep(2)
-                
+
                 self.take_screenshot(driver, "TC_STMT_01_01_account_details")
-                
+
                 page_source = driver.page_source
-                
+
                 # Check for account details elements
                 has_account_number = "Account Number" in page_source or "account number" in page_source.lower()
                 has_balance = "$" in page_source
-                
+
                 if has_account_number and has_balance:
                     print("[PASS] PASS: Account details displayed with number and balance")
                     self.passed += 1
@@ -76,7 +76,7 @@ class TestAccountStatement:
             else:
                 print("[FAIL] FAIL: No accounts to view")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_STMT_01_error")
@@ -92,16 +92,16 @@ class TestAccountStatement:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             time.sleep(2)
             account_links = driver.find_elements(By.XPATH, "//a[contains(@href, 'activity.htm')]")
-            
+
             if len(account_links) > 0:
                 account_links[0].click()
                 time.sleep(2)
-                
+
                 self.take_screenshot(driver, "TC_STMT_02_01_transaction_list")
-                
+
                 # Check for transaction table
                 try:
                     trans_table = driver.find_element(By.ID, "transactionTable")
@@ -118,7 +118,7 @@ class TestAccountStatement:
             else:
                 print("[FAIL] FAIL: No accounts available")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_STMT_02_error")
@@ -134,18 +134,18 @@ class TestAccountStatement:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             time.sleep(2)
             account_links = driver.find_elements(By.XPATH, "//a[contains(@href, 'activity.htm')]")
-            
+
             if len(account_links) > 0:
                 account_links[0].click()
                 time.sleep(2)
-                
+
                 self.take_screenshot(driver, "TC_STMT_03_01_account_type")
-                
+
                 page_source = driver.page_source.lower()
-                
+
                 # Check for account type
                 if "checking" in page_source or "savings" in page_source or "account type" in page_source:
                     print("[PASS] PASS: Account type displayed")
@@ -156,7 +156,7 @@ class TestAccountStatement:
             else:
                 print("[FAIL] FAIL: No accounts available")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_STMT_03_error")
@@ -172,18 +172,18 @@ class TestAccountStatement:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_STMT_04_01_balance_format")
-            
+
             page_source = driver.page_source
-            
+
             # Check for proper currency formatting ($X.XX)
             import re
             currency_pattern = r'\$[\d,]+\.\d{2}'
             matches = re.findall(currency_pattern, page_source)
-            
+
             if len(matches) > 0:
                 print(f"[PASS] PASS: Balance properly formatted (found: {matches[0]})")
                 self.passed += 1
@@ -195,7 +195,7 @@ class TestAccountStatement:
                 else:
                     print("[FAIL] FAIL: BUG - No currency formatting found")
                     self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_STMT_04_error")
@@ -211,13 +211,13 @@ class TestAccountStatement:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_STMT_05_01_checking_balance")
-            
+
             page_source = driver.page_source
-            
+
             # Check if negative balances are properly displayed
             # Look for negative indicator or red color class
             if "-$" in page_source or "negative" in page_source.lower():
@@ -226,7 +226,7 @@ class TestAccountStatement:
             else:
                 print("[PASS] PASS: No negative balances (all positive)")
                 self.passed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_STMT_05_error")
@@ -242,21 +242,21 @@ class TestAccountStatement:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_STMT_06_01_accounts_list")
-            
+
             # Count account rows
             account_links = driver.find_elements(By.XPATH, "//a[contains(@href, 'activity.htm')]")
-            
+
             if len(account_links) > 0:
                 print(f"[PASS] PASS: {len(account_links)} account(s) displayed")
                 self.passed += 1
             else:
                 print("[FAIL] FAIL: No accounts displayed")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_STMT_06_error")
@@ -272,11 +272,11 @@ class TestAccountStatement:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             # Get current user's account ID from URL
             time.sleep(2)
             account_links = driver.find_elements(By.XPATH, "//a[contains(@href, 'activity.htm')]")
-            
+
             if len(account_links) > 0:
                 href = account_links[0].get_attribute("href")
                 # Extract account ID
@@ -284,19 +284,22 @@ class TestAccountStatement:
                 match = re.search(r'id=(\d+)', href)
                 if match:
                     current_id = int(match.group(1))
-                    
+
                     # Try to access a different account (current_id - 1 or + 1000)
                     test_id = current_id - 1 if current_id > 1 else current_id + 1000
-                    
+
                     driver.get(f"https://parabank.parasoft.com/parabank/activity.htm?id={test_id}")
                     time.sleep(2)
-                    
+
                     self.take_screenshot(driver, "TC_STMT_07_01_unauthorized_access")
-                    
+
                     page_source = driver.page_source.lower()
-                    
-                    if "error" in page_source or "not found" in page_source or "denied" in page_source:
-                        print("[PASS] PASS: Unauthorized account access blocked")
+
+                    if "an internal error has occurred" in page_source:
+                        print("[FAIL] FAIL: BUG - Server crashed instead of proper access denial")
+                        self.failed += 1
+                    elif "access denied" in page_source or "unauthorized" in page_source:
+                        print("[PASS] PASS: Unauthorized account access properly blocked")
                         self.passed += 1
                     elif "$" in driver.page_source and "balance" in page_source:
                         print("[FAIL] FAIL: SECURITY BUG - IDOR - Accessed unauthorized account")
@@ -310,7 +313,7 @@ class TestAccountStatement:
             else:
                 print("[FAIL] FAIL: No accounts to test")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_STMT_07_error")

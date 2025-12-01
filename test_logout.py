@@ -48,9 +48,9 @@ class TestLogout:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             self.take_screenshot(driver, "TC_LOGOUT_01_01_after_login")
-            
+
             try:
                 logout_link = driver.find_element(By.LINK_TEXT, "Log Out")
                 if logout_link.is_displayed():
@@ -62,7 +62,7 @@ class TestLogout:
             except:
                 print("[FAIL] FAIL: Logout link not found")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGOUT_01_error")
@@ -78,16 +78,16 @@ class TestLogout:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             logout_link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Log Out")))
-            
+
             self.take_screenshot(driver, "TC_LOGOUT_02_01_before_logout")
-            
+
             logout_link.click()
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_LOGOUT_02_02_after_logout")
-            
+
             # Check if redirected to home/login page
             try:
                 login_button = driver.find_element(By.XPATH, "//input[@value='Log In']")
@@ -96,7 +96,7 @@ class TestLogout:
             except:
                 print("[FAIL] FAIL: Not redirected to login page after logout")
                 self.failed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGOUT_02_error")
@@ -112,32 +112,37 @@ class TestLogout:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             logout_link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Log Out")))
             logout_link.click()
             time.sleep(2)
-            
+
             # Try to access protected page directly
             driver.get("https://parabank.parasoft.com/parabank/overview.htm")
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_LOGOUT_03_01_protected_access")
-            
+
             page_source = driver.page_source.lower()
-            
-            # Check if login form is shown or error message
-            try:
-                driver.find_element(By.NAME, "username")
-                print("[PASS] PASS: Protected page redirects to login after logout")
-                self.passed += 1
-            except:
-                if "error" in page_source or "log in" in page_source:
-                    print("[PASS] PASS: Access denied to protected page")
+
+            # First check for internal error (bug)
+            if "an internal error has occurred" in page_source:
+                print("[FAIL] FAIL: BUG - Server crashed instead of proper redirect")
+                self.failed += 1
+            else:
+                # Check if login form is shown
+                try:
+                    driver.find_element(By.NAME, "username")
+                    print("[PASS] PASS: Protected page redirects to login after logout")
                     self.passed += 1
-                else:
-                    print("[FAIL] FAIL: SECURITY BUG - Protected page accessible after logout")
-                    self.failed += 1
-                
+                except:
+                    if "log in" in page_source:
+                        print("[PASS] PASS: Access denied to protected page")
+                        self.passed += 1
+                    else:
+                        print("[FAIL] FAIL: SECURITY BUG - Protected page accessible after logout")
+                        self.failed += 1
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGOUT_03_error")
@@ -153,34 +158,34 @@ class TestLogout:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             # Navigate to a protected page
             driver.get("https://parabank.parasoft.com/parabank/overview.htm")
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_LOGOUT_04_01_protected_page")
-            
+
             # Logout
             logout_link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Log Out")))
             logout_link.click()
             time.sleep(2)
-            
+
             # Click back button
             driver.back()
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_LOGOUT_04_02_after_back")
-            
+
             # Check if session is still valid
             page_source = driver.page_source.lower()
-            
+
             if "accounts overview" in page_source and "$" in driver.page_source:
                 print("[FAIL] FAIL: SECURITY BUG - Session restored after back button")
                 self.failed += 1
             else:
                 print("[PASS] PASS: Session not restored after back button")
                 self.passed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGOUT_04_error")
@@ -197,12 +202,12 @@ class TestLogout:
             driver, wait = self.create_driver()
             driver.get("https://parabank.parasoft.com")
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_LOGOUT_05_01_before_login")
-            
+
             # Check if logout link is NOT visible
             logout_links = driver.find_elements(By.LINK_TEXT, "Log Out")
-            
+
             if len(logout_links) == 0:
                 print("[PASS] PASS: Logout link correctly hidden before login")
                 self.passed += 1
@@ -214,7 +219,7 @@ class TestLogout:
                 else:
                     print("[PASS] PASS: Logout link exists but hidden")
                     self.passed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGOUT_05_error")
@@ -230,28 +235,28 @@ class TestLogout:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             logout_link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Log Out")))
             logout_link.click()
             time.sleep(1)
-            
+
             self.take_screenshot(driver, "TC_LOGOUT_06_01_first_logout")
-            
+
             # Try to find and click logout again (should not exist or work)
             try:
                 logout_link2 = driver.find_element(By.LINK_TEXT, "Log Out")
                 logout_link2.click()
                 time.sleep(1)
-                
+
                 self.take_screenshot(driver, "TC_LOGOUT_06_02_second_logout")
-                
+
                 # If no error, system handled gracefully
                 print("[PASS] PASS: Multiple logout handled gracefully")
                 self.passed += 1
             except:
                 print("[PASS] PASS: Logout link not available after logout")
                 self.passed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGOUT_06_error")
@@ -267,21 +272,21 @@ class TestLogout:
         try:
             driver, wait = self.create_driver()
             self.login(driver, wait)
-            
+
             cookies_before = driver.get_cookies()
             session_cookies_before = [c for c in cookies_before if 'session' in c['name'].lower() or 'jsession' in c['name'].lower()]
-            
+
             self.take_screenshot(driver, "TC_LOGOUT_07_01_before_logout")
-            
+
             logout_link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Log Out")))
             logout_link.click()
             time.sleep(2)
-            
+
             self.take_screenshot(driver, "TC_LOGOUT_07_02_after_logout")
-            
+
             cookies_after = driver.get_cookies()
             session_cookies_after = [c for c in cookies_after if 'session' in c['name'].lower() or 'jsession' in c['name'].lower()]
-            
+
             # Check if session cookies are cleared or changed
             if len(session_cookies_before) > 0:
                 if len(session_cookies_after) == 0:
@@ -296,7 +301,7 @@ class TestLogout:
             else:
                 print("[PASS] PASS: No session cookies found (may use different mechanism)")
                 self.passed += 1
-                
+
         except Exception as e:
             if driver:
                 self.take_screenshot(driver, "TC_LOGOUT_07_error")
